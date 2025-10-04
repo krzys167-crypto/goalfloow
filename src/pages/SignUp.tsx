@@ -61,15 +61,16 @@ const SignUp = () => {
         description: error.message,
         variant: "destructive",
       });
+      setLoading(false);
     } else {
       toast({
         title: "Success!",
-        description: "Please check your email to verify your account.",
+        description: "Welcome to GoalFlow!",
       });
-      navigate("/onboarding");
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
     }
-
-    setLoading(false);
   };
 
   const handleGoogleSignUp = async () => {
@@ -112,7 +113,7 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md glass-card rounded-3xl border-2">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
             <img src={logo} alt="GoalFlow" className="h-16 w-16" />
