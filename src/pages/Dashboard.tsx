@@ -7,16 +7,25 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, TrendingUp, DollarSign, Target, LogOut } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import logo from "@/assets/logo.png";
+import { AddExpenseModal } from "@/components/AddExpenseModal";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [expenses, setExpenses] = useState<any[]>([]);
 
   useEffect(() => {
     checkUser();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchExpenses();
+    }
+  }, [user]);
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -28,6 +37,18 @@ const Dashboard = () => {
     
     setUser(user);
     setLoading(false);
+  };
+
+  const fetchExpenses = async () => {
+    const { data } = await supabase
+      .from("expenses")
+      .select("*")
+      .order("date", { ascending: false })
+      .limit(5);
+    
+    if (data) {
+      setExpenses(data);
+    }
   };
 
   const handleSignOut = async () => {
@@ -129,11 +150,19 @@ const Dashboard = () => {
 
       {/* Floating Action Button */}
       <button
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full shadow-2xl hover:shadow-[0_0_40px_hsl(var(--primary)/0.5)] hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-pulse hover:animate-none z-50"
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-8 right-8 min-w-[56px] min-h-[56px] w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-primary to-primary-glow rounded-full shadow-2xl hover:shadow-[0_0_40px_hsl(var(--primary)/0.5)] hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-pulse hover:animate-none z-50"
         aria-label="Add expense"
       >
         <Plus className="h-8 w-8 text-primary-foreground group-hover:rotate-90 transition-transform duration-300" />
       </button>
+
+      {/* Add Expense Modal */}
+      <AddExpenseModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onSuccess={fetchExpenses}
+      />
     </div>
   );
 };
