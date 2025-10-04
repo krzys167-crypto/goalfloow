@@ -14,7 +14,173 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      budget_settings: {
+        Row: {
+          category_budgets: Json | null
+          created_at: string
+          id: string
+          monthly_budget: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_budgets?: Json | null
+          created_at?: string
+          id?: string
+          monthly_budget?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_budgets?: Json | null
+          created_at?: string
+          id?: string
+          monthly_budget?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          budget_amount: number | null
+          created_at: string
+          icon: string
+          id: string
+          name: string
+          type: Database["public"]["Enums"]["category_type"]
+          user_id: string | null
+        }
+        Insert: {
+          budget_amount?: number | null
+          created_at?: string
+          icon: string
+          id?: string
+          name: string
+          type?: Database["public"]["Enums"]["category_type"]
+          user_id?: string | null
+        }
+        Update: {
+          budget_amount?: number | null
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+          type?: Database["public"]["Enums"]["category_type"]
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          goal_id: string | null
+          id: string
+          name: string
+          notes: string | null
+          receipt_url: string | null
+          status: Database["public"]["Enums"]["expense_status"]
+          type: Database["public"]["Enums"]["expense_type"]
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          date?: string
+          goal_id?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          receipt_url?: string | null
+          status?: Database["public"]["Enums"]["expense_status"]
+          type?: Database["public"]["Enums"]["expense_type"]
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          goal_id?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          receipt_url?: string | null
+          status?: Database["public"]["Enums"]["expense_status"]
+          type?: Database["public"]["Enums"]["expense_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_goal_id_fkey"
+            columns: ["goal_id"]
+            isOneToOne: false
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      goals: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          icon: string
+          id: string
+          name: string
+          target_amount: number | null
+          target_date: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string
+          id?: string
+          name: string
+          target_amount?: number | null
+          target_date?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          target_amount?: number | null
+          target_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +189,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      category_type: "system" | "custom"
+      expense_status: "logged" | "reviewed" | "pending"
+      expense_type: "expense" | "income"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +318,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      category_type: ["system", "custom"],
+      expense_status: ["logged", "reviewed", "pending"],
+      expense_type: ["expense", "income"],
+    },
   },
 } as const
